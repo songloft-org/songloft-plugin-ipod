@@ -1,0 +1,141 @@
+name: Release Plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '发布版本号（留空则使用 plugin.json 中的版本）'
+        required: false
+        type: string
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and release iPod plugin
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout plugin source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package.json
+
+      - name: Resolve release version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          VERSION="${INPUT_VERSION:-$(node -p "require('./plugin.json').version")}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid semantic version: $VERSION" >&2
+            exit 1
+          fi
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Update release metadata
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const version = process.env.VERSION;
+
+          for (const file of ['plugin.json', 'package.json']) {
+            const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+            data.version = version;
+            fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
+          }
+          NODE
+
+      - name: Install plugin toolchain
+        run: |
+          npm install --ignore-scripts
+
+      - name: Type-check plugin
+        run: |
+          npx tsc --noEmit
+          npx tsc --project tsconfig.backend.json --noEmit
+
+      - name: Build and validate plugin package
+        run: |
+          npm run build
+          npm run validate
+
+      - name: Verify package contents
+        id: artifact
+        run: |
+          ENTRY_PATH=$(node -p "require('./plugin.json').entryPath")
+          ZIP_NAME="${ENTRY_PATH}.jsplugin.zip"
+          ZIP_PATH="dist/${ZIP_NAME}"
+
+          test -f "$ZIP_PATH"
+          unzip -t "$ZIP_PATH"
+          test -f dist/_build/plugin.json
+          test -f dist/_build/main.jsc
+          test -f dist/_build/static/index.html
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const manifest = JSON.parse(fs.readFileSync('dist/_build/plugin.json', 'utf8'));
+          if (!manifest.entryHash || !manifest.zipHash) {
+            throw new Error('Built plugin manifest is missing entryHash or zipHash');
+          }
+          NODE
+
+          echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
+          echo "zip_path=$ZIP_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipod-plugin-${{ steps.version.outputs.value }}
+          path: ${{ steps.artifact.outputs.zip_path }}
+          if-no-files-found: error
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ steps.version.outputs.value }}
+          ZIP_PATH: ${{ steps.artifact.outputs.zip_path }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; replacing its assets."
+            gh release upload "$TAG" "$ZIP_PATH" --clobber
+          else
+            gh release create "$TAG" "$ZIP_PATH" \
+              --title "$TAG" \
+              --generate-notes
+          fi
+
+      - name: Commit release metadata
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+          TAG: v${{ steps.version.outputs.value }}
+          ZIP_NAME: ${{ steps.artifact.outputs.zip_name }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'plugin.json';
+          const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+          data.download_url = `https://github.com/${process.env.GITHUB_REPOSITORY}/releases/download/${process.env.TAG}/${process.env.ZIP_NAME}`;
+          fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
+          NODE
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add plugin.json package.json
+          git diff --cached --quiet || git commit -m "chore(release): bump to v${VERSION}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

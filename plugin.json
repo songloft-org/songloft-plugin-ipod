@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/songloft-org/plugin-toolchain/main/schemas/plugin.schema.json",
+  "name": "ipod",
+  "version": "0.1.0",
+  "description": "iPod Classic UI for Songloft — pixel-perfect click wheel experience for your music library",
+  "author": "songloft-org",
+  "homepage": "https://github.com/songloft-org/songloft-plugin-ipod",
+  "license": "MIT",
+  "entryPath": "ipod",
+  "main": "main.js",
+  "minHostVersion": "1.3.0",
+  "renderEngine": "webview",
+  "permissions": ["songs.read", "playlists.read"],
+  "publicPaths": ["static/"],
+  "updateUrl": "",
+  "download_url": "",
+  "entryHash": "893c1a601a66a5b5b9698af83d050d69b5b83fd4a8e543aa799ea436485b3f25",
+  "zipHash": "aef8125b3b72f21be3f157539eacd749e24374e0264ba789b5ecd246018295cb"
+}

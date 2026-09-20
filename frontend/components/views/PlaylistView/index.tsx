@@ -1,0 +1,50 @@
+import { useMemo } from "react";
+
+import SelectableList, {
+  SelectableListOption,
+} from "@/components/SelectableList";
+import { useSelectableList } from "@/hooks";
+import * as Utils from "@/utils";
+import { useFetchPlaylist } from "@/hooks/utils/useDataFetcher";
+
+interface Props {
+  id: string;
+  inLibrary?: boolean;
+}
+
+const PlaylistView = ({ id, inLibrary = false }: Props) => {
+  const { data: playlist, isLoading } = useFetchPlaylist({
+    id,
+    inLibrary,
+  });
+
+  const options: SelectableListOption[] = useMemo(
+    () =>
+      playlist?.songs.map((song, index) => ({
+        type: "song",
+        label: song.name,
+        sublabel: song.artistName ?? "Unknown artist",
+        imageUrl: Utils.getArtwork(100, song.artwork?.url),
+        queueOptions: {
+          playlist,
+          startPosition: index,
+        },
+        showNowPlayingView: true,
+        longPressOptions: Utils.getMediaOptions("song", song.id),
+      })) ?? [],
+    [playlist]
+  );
+
+  const { activeIndex: scrollIndex } = useSelectableList({ viewId: "playlist", options });
+
+  return (
+    <SelectableList
+      loading={isLoading}
+      options={options}
+      activeIndex={scrollIndex}
+      emptyMessage="No songs in this playlist"
+    />
+  );
+};
+
+export default PlaylistView;

@@ -1,0 +1,31 @@
+{
+  "name": "songloft-plugin-ipod",
+  "version": "0.1.0",
+  "description": "iPod Classic UI plugin for Songloft",
+  "private": true,
+  "scripts": {
+    "build": "vite build && songloft-plugin build",
+    "build:backend": "songloft-plugin build",
+    "build:frontend": "vite build",
+    "dev": "songloft-plugin dev",
+    "validate": "songloft-plugin validate"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.100.4",
+    "ios-haptics": "^0.1.4",
+    "motion": "^12.38.0",
+    "styled-components": "^6.4.1",
+    "use-debounce": "^10.1.1"
+  },
+  "devDependencies": {
+    "@songloft/plugin-sdk": "^2.7.0",
+    "@songloft/plugin-builder": "^2.7.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.5.2",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "typescript": "^5.7.0",
+    "vite": "^6.3.5"
+  }
+}

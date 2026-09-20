@@ -1,0 +1,15 @@
+# Node.js dependencies
+node_modules/
+
+# Generated plugin package and intermediate build output
+dist/
+static/
+
+# Local tooling and logs
+*.log
+.npm/
+
+# Editor and operating system files
+.idea/
+.vscode/
+.DS_Store
