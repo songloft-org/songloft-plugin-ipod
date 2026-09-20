@@ -18,7 +18,6 @@ const SettingsView = () => {
   })), [deviceTheme, setDeviceTheme]);
 
   const options: SelectableListOption[] = useMemo(() => [
-    { type: "view", label: "About", viewId: "about", preview: SplitScreenPreview.Settings },
     {
       type: "actionSheet", id: "shuffle-mode-action-sheet", label: "Shuffle", preview: SplitScreenPreview.Settings,
       listOptions: [
