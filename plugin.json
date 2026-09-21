@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/songloft-org/plugin-toolchain/main/schemas/plugin.schema.json",
-  "name": "ipod",
+  "name": "iPod",
   "version": "0.1.0",
   "description": "iPod Classic UI for Songloft — pixel-perfect click wheel experience for your music library",
   "author": "songloft-org",
