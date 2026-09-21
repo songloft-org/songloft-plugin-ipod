@@ -7,18 +7,13 @@
   "homepage": "https://github.com/songloft-org/songloft-plugin-ipod",
   "license": "MIT",
   "entryPath": "ipod",
-  "main": "main.js",
+  "main": "main.jsc",
   "minHostVersion": "1.3.0",
   "renderEngine": "webview",
-  "permissions": [
-    "songs.read",
-    "playlists.read"
-  ],
-  "publicPaths": [
-    "static/"
-  ],
+  "permissions": ["songs.read", "playlists.read"],
+  "publicPaths": ["static/"],
   "updateUrl": "",
   "download_url": "https://github.com/songloft-org/songloft-plugin-ipod/releases/download/v0.1.0/ipod.jsplugin.zip",
-  "entryHash": "893c1a601a66a5b5b9698af83d050d69b5b83fd4a8e543aa799ea436485b3f25",
-  "zipHash": "aef8125b3b72f21be3f157539eacd749e24374e0264ba789b5ecd246018295cb"
+  "entryHash": "a2ef7dd798f47b77aeb02f6c8aa026bbef355e1e366f0fbf31f13f4426fad2eb",
+  "zipHash": "851c4e95de14a368917d0ae0e8c239cd18148b2bb794d9f96a0c17390d4be9ac"
 }
