@@ -4,7 +4,7 @@
   "description": "iPod Classic UI plugin for Songloft",
   "private": true,
   "scripts": {
-    "build": "vite build && songloft-plugin build",
+    "build": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\" && vite build && songloft-plugin build",
     "build:backend": "songloft-plugin build",
     "build:frontend": "vite build",
     "dev": "songloft-plugin dev",
