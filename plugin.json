@@ -11,8 +11,13 @@
   "main": "main.jsc",
   "minHostVersion": "1.3.0",
   "renderEngine": "webview",
-  "permissions": ["songs.read", "playlists.read"],
-  "publicPaths": ["static/"],
+  "permissions": [
+    "songs.read",
+    "playlists.read"
+  ],
+  "publicPaths": [
+    "static/"
+  ],
   "updateUrl": "",
   "download_url": "https://github.com/songloft-org/songloft-plugin-ipod/releases/download/v0.1.1/ipod.jsplugin.zip",
   "entryHash": "a2ef7dd798f47b77aeb02f6c8aa026bbef355e1e366f0fbf31f13f4426fad2eb",
