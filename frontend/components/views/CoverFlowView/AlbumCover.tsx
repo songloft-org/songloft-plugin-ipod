@@ -22,6 +22,7 @@ interface ContainerProps {
   $offset: number;
   $index: number;
   $activeIndex: number;
+  $disableReflection: boolean;
 }
 
 const Container = styled.div.attrs({
@@ -36,7 +37,10 @@ const Container = styled.div.attrs({
   width: 8em;
   transition: transform 0.25s, opacity 0.35s, background 0.35s;
   transform-style: preserve-3d;
-  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(240, 240, 240, 0.2)));
+  -webkit-box-reflect: ${(props) =>
+    props.$disableReflection
+      ? "none"
+      : "below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(70%, transparent), to(rgba(240, 240, 240, 0.2)))"};
   opacity: ${(props) => props.$isHidden && 0};
 
   ${(props) =>
@@ -109,6 +113,7 @@ const AlbumCover = ({
 }: Props) => {
   const isVisible = index > activeIndex - 15 && index < activeIndex + 15;
   const isActive = index === activeIndex;
+  const disableReflection = /android/i.test(navigator.userAgent);
   const offset = getOffsetPx(index - activeIndex, midpoint.x);
   const isHidden = !isActive && playingAlbum;
 
@@ -121,6 +126,7 @@ const AlbumCover = ({
       $offset={offset}
       $index={index}
       $activeIndex={activeIndex}
+      $disableReflection={disableReflection}
       $isPlaying={isSelected && playingAlbum}
     >
       <Artwork src={Utils.getArtwork(300, album.artwork?.url)} />
