@@ -84,7 +84,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
 
   const handleSelect = useCallback(() => {
     setPlayingAlbum(true);
-    setHeaderTitle("Now Playing");
+    setHeaderTitle("正在播放");
   }, [setHeaderTitle, setPlayingAlbum]);
 
   useEventListener<IpodEvent>("centerclick", handleSelect);

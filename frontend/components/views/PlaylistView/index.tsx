@@ -23,7 +23,7 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
       playlist?.songs.map((song, index) => ({
         type: "song",
         label: song.name,
-        sublabel: song.artistName ?? "Unknown artist",
+        sublabel: song.artistName ?? "未知歌手",
         imageUrl: Utils.getArtwork(100, song.artwork?.url),
         queueOptions: {
           playlist,
@@ -42,7 +42,7 @@ const PlaylistView = ({ id, inLibrary = false }: Props) => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
-      emptyMessage="No songs in this playlist"
+      emptyMessage="该播放列表暂无歌曲"
     />
   );
 };

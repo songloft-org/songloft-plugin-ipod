@@ -11,12 +11,12 @@ const PlaylistsView = ({ playlists, inLibrary = true }: Props) => {
   const options: SelectableListOption[] = useMemo(() => (
     playlists ?? fetchedPlaylists?.pages.flatMap((page) => page?.data ?? []) ?? []
   ).map((playlist) => ({
-    type: "view", label: playlist.name, sublabel: playlist.description || `By ${playlist.curatorName}`,
+    type: "view", label: playlist.name, sublabel: playlist.description || `创建者：${playlist.curatorName}`,
     imageUrl: Utils.getArtwork(100, playlist.artwork?.url), viewId: "playlist", headerTitle: playlist.name,
     props: { id: playlist.id, inLibrary }, longPressOptions: Utils.getMediaOptions("playlist", playlist.id),
   })), [fetchedPlaylists, inLibrary, playlists]);
   const handleNearEndOfList = useCallback(() => { if (!isFetchingNextPage) void fetchNextPage(); }, [fetchNextPage, isFetchingNextPage]);
   const { activeIndex } = useSelectableList({ viewId: "playlists", options, onNearEndOfList: handleNearEndOfList });
-  return <SelectableList activeIndex={activeIndex} emptyMessage="No saved playlists" loading={isLoading} loadingNextItems={isFetchingNextPage} options={options} />;
+  return <SelectableList activeIndex={activeIndex} emptyMessage="没有已保存的播放列表" loading={isLoading} loadingNextItems={isFetchingNextPage} options={options} />;
 };
 export default PlaylistsView;

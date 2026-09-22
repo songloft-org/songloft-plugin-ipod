@@ -9,9 +9,9 @@ const GAME_OVER_ITEMS: GameOverMenuItem[] = ["newGame", "quit"];
 const gameOverMenuItemLabel = (item: GameOverMenuItem): string => {
   switch (item) {
     case "newGame":
-      return "New Game";
+      return "重新开始";
     case "quit":
-      return "Quit";
+      return "退出";
   }
 };
 
@@ -447,13 +447,13 @@ class App {
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Game Over", this.canvasWidth / 2, panelY + titleHeight / 2);
+    ctx.fillText("游戏结束", this.canvasWidth / 2, panelY + titleHeight / 2);
 
     const scoreFontSize = Math.round(11 * s);
     ctx.font = `${scoreFontSize}px -apple-system, "Helvetica Neue", sans-serif`;
     ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
     ctx.fillText(
-      `Score: ${this.player.score}`,
+      `得分：${this.player.score}`,
       this.canvasWidth / 2,
       panelY + titleHeight + scoreHeight / 2
     );

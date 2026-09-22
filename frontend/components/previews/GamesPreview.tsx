@@ -28,8 +28,8 @@ const Text = styled.h3`
 
 const GamesPreview = () => (
   <Container>
-    <Image alt="Dice" src={ASSETS.dice} />
-    <Text>Games</Text>
+    <Image alt="骰子" src={ASSETS.dice} />
+    <Text>游戏</Text>
   </Container>
 );
 

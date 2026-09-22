@@ -216,22 +216,22 @@ export class Renderer {
 
   renderMenu(items: MenuItem[], selectedIndex: number, winCount: number): void {
     this.drawOverlay();
-    const subtitle = winCount === 1 ? "1 win" : `${winCount} wins`;
+    const subtitle = `胜利次数：${winCount}`;
     this.drawMenuList(
       items.map(menuItemLabel),
       selectedIndex,
-      "Paused",
+      "已暂停",
       subtitle
     );
   }
 
   renderWinOverlay(items: WinMenuItem[], selectedIndex: number, winCount: number): void {
     this.drawOverlay();
-    const subtitle = winCount === 1 ? "1 win total" : `${winCount} wins total`;
+    const subtitle = `累计胜利：${winCount}`;
     this.drawMenuList(
       items.map(winMenuItemLabel),
       selectedIndex,
-      "You Win!",
+      "你赢了！",
       subtitle
     );
   }
@@ -241,7 +241,7 @@ export class Renderer {
     this.drawMenuList(
       items.map(lostMenuItemLabel),
       selectedIndex,
-      "No More Moves"
+      "无可移动的牌"
     );
   }
 
@@ -1068,30 +1068,30 @@ function matchesTarget(a: SelectableTarget, b: SelectableTarget): boolean {
 function menuItemLabel(item: MenuItem): string {
   switch (item) {
     case "resume":
-      return "Resume";
+      return "继续游戏";
     case "undo":
-      return "Undo";
+      return "撤销";
     case "redeal":
-      return "Redeal";
+      return "重新发牌";
     case "quit":
-      return "Quit";
+      return "退出";
   }
 }
 
 function winMenuItemLabel(item: WinMenuItem): string {
   switch (item) {
     case "newGame":
-      return "New Game";
+      return "新游戏";
     case "quit":
-      return "Quit";
+      return "退出";
   }
 }
 
 function lostMenuItemLabel(item: LostMenuItem): string {
   switch (item) {
     case "redeal":
-      return "Redeal";
+      return "重新发牌";
     case "quit":
-      return "Quit";
+      return "退出";
   }
 }

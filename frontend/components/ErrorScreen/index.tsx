@@ -18,7 +18,7 @@ const Text = styled.p`
 `;
 
 const strings = {
-  defaultMessage: "Something went wrong",
+  defaultMessage: "发生了错误",
 };
 
 interface Props {

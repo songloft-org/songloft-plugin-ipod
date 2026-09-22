@@ -102,7 +102,7 @@ const ActionSheet = ({ viewStack, index, isHidden }: Props) => {
       ...listOptions,
       {
         type: "action",
-        label: "Cancel",
+        label: "取消",
         onSelect: () => {},
       },
     ];

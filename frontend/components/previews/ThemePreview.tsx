@@ -18,7 +18,7 @@ const Image = styled.img`
 
 const ThemePreview = () => (
   <Container>
-    <Image alt="Themes" src={ASSETS.themesPreview} />
+    <Image alt="主题预览" src={ASSETS.themesPreview} />
   </Container>
 );
 

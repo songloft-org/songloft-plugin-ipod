@@ -92,7 +92,7 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
 
   const markHostUnavailable = useCallback((error?: unknown) => {
     setHostAvailable(false);
-    setPlayerError(error instanceof Error ? error.message : "Songloft player is unavailable");
+    setPlayerError(error instanceof Error ? error.message : "Songloft 播放器不可用");
   }, []);
 
   const updateFromHostState = useCallback((state: HostPlayerState) => {
@@ -117,7 +117,7 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
   useEffect(() => {
     const available = isHostPlayerAvailable();
     setHostAvailable(available);
-    setPlayerError(available ? undefined : "Open this plugin in Songloft to control playback");
+    setPlayerError(available ? undefined : "请在 Songloft 中打开此插件以控制播放");
     if (!available) return;
 
     let active = true;
@@ -141,7 +141,7 @@ export const AudioPlayerProvider = ({ children }: { children: React.ReactNode })
     const ids = songs.map(mediaSongToHostId).filter((id): id is number => id !== undefined);
     const player = window.SongloftPlugin?.player;
     if (!hostAvailable || !player || !ids.length) {
-      throw new Error("Songloft player is unavailable");
+      throw new Error("Songloft 播放器不可用");
     }
     const startIndex = Math.max(0, Math.min(queueOptions.startPosition ?? 0, ids.length - 1));
     try {

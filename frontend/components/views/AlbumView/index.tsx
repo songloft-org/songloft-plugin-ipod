@@ -41,7 +41,7 @@ const AlbumView = ({ id, inLibrary = false }: Props) => {
       loading={isLoading}
       options={options}
       activeIndex={scrollIndex}
-      emptyMessage="No saved songs"
+      emptyMessage="没有已保存的歌曲"
     />
   );
 };

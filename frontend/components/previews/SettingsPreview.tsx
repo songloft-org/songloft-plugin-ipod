@@ -34,9 +34,9 @@ const Subtext = styled.h3`
 
 const SettingsPreview = () => (
   <Container>
-    <Image alt="React logo" src={ASSETS.reactLogo} />
+    <Image alt="iPod 图标" src={ASSETS.reactLogo} />
     <Text>iPod.js</Text>
-    <Subtext>by Tanner V</Subtext>
+    <Subtext>Songloft iPod 插件</Subtext>
   </Container>
 );
 

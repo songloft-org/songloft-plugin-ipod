@@ -29,7 +29,7 @@ const NowPlaying = ({ hideArtwork, onHide: _onHide }: Props) => {
       {repeatMode === "all" && <StatusEmoji>🔁</StatusEmoji>}
     </StatusBar>
     <MetadataContainer>
-      <ArtworkContainer $isHidden={hideArtwork}><Artwork src={artworkUrl} alt={nowPlayingItem?.name ? `${nowPlayingItem.name} album artwork` : "Album artwork"} /></ArtworkContainer>
+      <ArtworkContainer $isHidden={hideArtwork}><Artwork src={artworkUrl} alt={nowPlayingItem?.name ? `${nowPlayingItem.name} 的专辑封面` : "专辑封面"} /></ArtworkContainer>
       <InfoContainer><Text>{nowPlayingItem?.name}</Text><Subtext>{nowPlayingItem?.artistName}</Subtext><Subtext>{nowPlayingItem?.albumName}</Subtext></InfoContainer>
     </MetadataContainer>
     <ControlsContainer><Controls /></ControlsContainer>

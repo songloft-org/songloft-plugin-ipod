@@ -119,7 +119,7 @@ const SelectableList = ({
   activeIndex,
   loading,
   loadingNextItems,
-  emptyMessage = "Nothing to see here",
+  emptyMessage = "暂无内容",
   renderItem,
 }: Props) => {
   const fullOptions = useMemo(

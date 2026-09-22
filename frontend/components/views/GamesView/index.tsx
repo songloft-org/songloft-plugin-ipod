@@ -8,13 +8,13 @@ const GamesView = () => {
   const options: SelectableListOption[] = [
     {
       type: "view",
-      label: "Brick",
+      label: "打砖块",
       viewId: "brickGame",
       preview: SplitScreenPreview.Games,
     },
     {
       type: "view",
-      label: "Solitaire",
+      label: "纸牌接龙",
       viewId: "solitaireGame",
       preview: SplitScreenPreview.Games,
     },

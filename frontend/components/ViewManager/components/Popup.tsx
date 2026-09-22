@@ -116,7 +116,7 @@ const Popup = ({ viewStack, index, isHidden }: Props) => {
       : [
           {
             type: "action",
-            label: "Done",
+            label: "完成",
             onSelect: () => {},
           },
         ];

@@ -34,7 +34,7 @@ const SongsView = ({ songs }: Props) => {
     <SelectableList
       options={options}
       activeIndex={scrollIndex}
-      emptyMessage="No songs to show"
+      emptyMessage="没有可显示的歌曲"
     />
   );
 };

@@ -17,6 +17,6 @@ const ArtistsView = ({ artists, inLibrary = true, showImages = false }: Props) =
   })), [artists, fetchedArtists, inLibrary, showImages]);
   const handleNearEndOfList = useCallback(() => { if (!isFetchingNextPage) void fetchNextPage(); }, [fetchNextPage, isFetchingNextPage]);
   const { activeIndex } = useSelectableList({ viewId: "artists", options, onNearEndOfList: handleNearEndOfList });
-  return <SelectableList loading={isLoading} loadingNextItems={isFetchingNextPage} options={options} activeIndex={activeIndex} emptyMessage="No saved artists" />;
+  return <SelectableList loading={isLoading} loadingNextItems={isFetchingNextPage} options={options} activeIndex={activeIndex} emptyMessage="没有已保存的歌手" />;
 };
 export default ArtistsView;

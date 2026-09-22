@@ -19,7 +19,7 @@ const NowPlayingPreview = () => {
     <Container>
       <Artwork
         src={Utils.getArtwork(300, nowPlayingItem.artwork?.url)}
-        alt="now playing artwork"
+        alt="正在播放的专辑封面"
       />
     </Container>
   ) : null;

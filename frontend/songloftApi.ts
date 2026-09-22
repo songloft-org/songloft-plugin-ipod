@@ -116,9 +116,9 @@ export function coverImageUrl(sourceUrl?: string, width = 240): string | undefin
 
 const toMediaSong = (song: HostSong): MediaApi.Song => ({
   id: String(song.id),
-  name: song.title?.trim() || "Unknown Song",
-  artistName: song.artist?.trim() || "Unknown Artist",
-  albumName: song.album?.trim() || "Unknown Album",
+  name: song.title?.trim() || "未知歌曲",
+  artistName: song.artist?.trim() || "未知歌手",
+  albumName: song.album?.trim() || "未知专辑",
   artwork: song.cover_url || song.coverUrl ? { url: coverImageUrl(song.cover_url ?? song.coverUrl) ?? "" } : undefined,
   duration: song.duration ?? 0,
   trackNumber: song.track_number ?? song.trackNumber ?? 0,
@@ -165,7 +165,7 @@ export async function fetchMediaArtists(): Promise<MediaApi.Artist[]> {
   const albums = await fetchMediaAlbums();
   const artists = new Map<string, MediaApi.Artist>();
   for (const album of albums) {
-    const name = album.artistName || "Unknown Artist";
+    const name = album.artistName || "未知歌手";
     const current = artists.get(name) ?? {
       id: name,
       name,

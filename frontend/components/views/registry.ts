@@ -80,7 +80,7 @@ export const VIEW_REGISTRY = {
   music: {
     component: MusicView,
     type: "split",
-    title: "Music",
+    title: "音乐",
     isSplitScreen: true,
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"music">,
@@ -88,7 +88,7 @@ export const VIEW_REGISTRY = {
   games: {
     component: GamesView,
     type: "split",
-    title: "Games",
+    title: "游戏",
     isSplitScreen: true,
     preview: SplitScreenPreview.Games,
   } as ViewConfig<"games">,
@@ -96,7 +96,7 @@ export const VIEW_REGISTRY = {
   settings: {
     component: SettingsView,
     type: "split",
-    title: "Settings",
+    title: "设置",
     isSplitScreen: true,
     preview: SplitScreenPreview.Settings,
   } as ViewConfig<"settings">,
@@ -105,77 +105,77 @@ export const VIEW_REGISTRY = {
   about: {
     component: AboutView,
     type: "full",
-    title: "About",
+    title: "关于",
     preview: SplitScreenPreview.Settings,
   } as ViewConfig<"about">,
 
   artists: {
     component: ArtistsView,
     type: "full",
-    title: "Artists",
+    title: "歌手",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"artists">,
 
   artist: {
     component: ArtistView,
     type: "full",
-    title: "Artist",
+    title: "歌手",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"artist">,
 
   albums: {
     component: AlbumsView,
     type: "full",
-    title: "Albums",
+    title: "专辑",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"albums">,
 
   album: {
     component: AlbumView,
     type: "full",
-    title: "Album",
+    title: "专辑",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"album">,
 
   songs: {
     component: SongsView,
     type: "full",
-    title: "Songs",
+    title: "歌曲",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"songs">,
 
   nowPlaying: {
     component: NowPlayingView,
     type: "full",
-    title: "Now Playing",
+    title: "正在播放",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"nowPlaying">,
 
   playlists: {
     component: PlaylistsView,
     type: "full",
-    title: "Playlists",
+    title: "播放列表",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"playlists">,
 
   playlist: {
     component: PlaylistView,
     type: "full",
-    title: "Playlist",
+    title: "播放列表",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"playlist">,
 
   search: {
     component: SearchView,
     type: "full",
-    title: "Search",
+    title: "搜索",
     preview: SplitScreenPreview.Music,
   } as ViewConfig<"search">,
 
   brickGame: {
     component: BrickGameView,
     type: "full",
-    title: "Brick",
+    title: "打砖块",
     preview: SplitScreenPreview.Games,
     disableLongPress: true,
   } as ViewConfig<"brickGame">,
@@ -183,7 +183,7 @@ export const VIEW_REGISTRY = {
   solitaireGame: {
     component: SolitaireGameView,
     type: "full",
-    title: "Solitaire",
+    title: "纸牌接龙",
     preview: SplitScreenPreview.Games,
     disableLongPress: true,
   } as ViewConfig<"solitaireGame">,

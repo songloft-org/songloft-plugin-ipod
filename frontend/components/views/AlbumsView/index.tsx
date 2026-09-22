@@ -18,6 +18,6 @@ const AlbumsView = ({ albums, inLibrary = true }: Props) => {
   })), [albums, fetchedAlbums, inLibrary]);
   const handleNearEndOfList = useCallback(() => { if (!isFetchingNextPage) void fetchNextPage(); }, [fetchNextPage, isFetchingNextPage]);
   const { activeIndex } = useSelectableList({ viewId: "albums", options, onNearEndOfList: handleNearEndOfList });
-  return <SelectableList loading={isLoading} loadingNextItems={isFetchingNextPage} options={options} activeIndex={activeIndex} emptyMessage="No albums" />;
+  return <SelectableList loading={isLoading} loadingNextItems={isFetchingNextPage} options={options} activeIndex={activeIndex} emptyMessage="没有专辑" />;
 };
 export default AlbumsView;

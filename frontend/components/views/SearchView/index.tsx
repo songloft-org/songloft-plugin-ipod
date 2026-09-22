@@ -5,8 +5,6 @@ import { getConditionalOption } from "@/components/SelectableList";
 import SelectableList, { SelectableListOption } from "@/components/SelectableList";
 import { useEffectOnce, useKeyboardInput, useSelectableList } from "@/hooks";
 import { useFetchSearchResults } from "@/hooks/utils/useDataFetcher";
-import { pluralize } from "@/utils/strings";
-
 const SearchView = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { refetch, data: searchResults, isFetching } = useFetchSearchResults({
@@ -27,42 +25,42 @@ const SearchView = () => {
     return [
       {
         type: "action" as const,
-        label: "Search",
-        sublabel: searchTerm ? `Results for: ${searchTerm}` : "Enter text to search",
+        label: "搜索",
+        sublabel: searchTerm ? `“${searchTerm}”的搜索结果` : "输入关键词进行搜索",
         imageUrl: ASSETS.searchIcon,
         onSelect: showKeyboard,
       },
       ...getConditionalOption(Boolean(artists.length), {
         type: "view",
-        label: "Artists",
+        label: "歌手",
         viewId: "artists",
         props: { artists, inLibrary: false, showImages: true },
         imageUrl: ASSETS.artistsIcon,
-        sublabel: `${artists.length} ${pluralize("artist", "artists", artists.length)}`,
+        sublabel: `${artists.length} 位歌手`,
       }),
       ...getConditionalOption(Boolean(albums.length), {
         type: "view",
-        label: "Albums",
+        label: "专辑",
         viewId: "albums",
         props: { albums, inLibrary: false },
         imageUrl: ASSETS.albumsIcon,
-        sublabel: `${albums.length} ${pluralize("album", "albums", albums.length)}`,
+        sublabel: `${albums.length} 张专辑`,
       }),
       ...getConditionalOption(Boolean(songs.length), {
         type: "view",
-        label: "Songs",
+        label: "歌曲",
         viewId: "songs",
         props: { songs },
         imageUrl: ASSETS.songIcon,
-        sublabel: `${songs.length} ${pluralize("song", "songs", songs.length)}`,
+        sublabel: `${songs.length} 首歌曲`,
       }),
       ...getConditionalOption(Boolean(playlists.length), {
         type: "view",
-        label: "Playlists",
+        label: "播放列表",
         viewId: "playlists",
         props: { playlists, inLibrary: false },
         imageUrl: ASSETS.playlistIcon,
-        sublabel: `${playlists.length} ${pluralize("playlist", "playlists", playlists.length)}`,
+        sublabel: `${playlists.length} 个播放列表`,
       }),
     ];
   }, [searchResults, searchTerm, showKeyboard]);
@@ -75,7 +73,7 @@ const SearchView = () => {
       loading={isFetching}
       options={options}
       activeIndex={activeIndex}
-      emptyMessage="No results"
+      emptyMessage="没有搜索结果"
     />
   );
 };

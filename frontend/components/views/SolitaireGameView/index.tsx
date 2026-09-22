@@ -99,7 +99,7 @@ const SolitaireGame = () => {
           height: `${dimensions.height}px`,
         }}
       >
-        <p>Your browser does not support this feature</p>
+        <p>您的浏览器不支持此功能</p>
       </Canvas>
     </RootContainer>
   );

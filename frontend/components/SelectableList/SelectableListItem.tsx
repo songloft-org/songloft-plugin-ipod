@@ -84,7 +84,7 @@ const SelectableListItem = ({ option, isActive }: Props) => {
 
   return (
     <Container $isActive={isActive}>
-      {option.imageUrl && <Image alt="List item" src={option.imageUrl} />}
+      {option.imageUrl && <Image alt="列表项图标" src={option.imageUrl} />}
       <LabelContainer>
         <Label>{option.label}</Label>
         {option.sublabel && <Sublabel>{option.sublabel}</Sublabel>}

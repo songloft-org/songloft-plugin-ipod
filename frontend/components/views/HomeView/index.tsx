@@ -10,10 +10,10 @@ const HomeView = () => {
   const { showView, viewStack } = useViewContext();
   const options: SelectableListOption[] = useMemo(() => [
     { type: "view", label: "Cover Flow", viewId: "coverFlow", preview: SplitScreenPreview.Music },
-    { type: "view", label: "Music", viewId: "music", preview: SplitScreenPreview.Music },
-    { type: "view", label: "Games", viewId: "games", preview: SplitScreenPreview.Games },
-    { type: "view", label: "Settings", viewId: "settings", preview: SplitScreenPreview.Settings },
-    ...(nowPlayingItem ? [{ type: "view" as const, label: "Now Playing", viewId: "nowPlaying" as const, preview: SplitScreenPreview.NowPlaying }] : []),
+    { type: "view", label: "音乐", viewId: "music", preview: SplitScreenPreview.Music },
+    { type: "view", label: "游戏", viewId: "games", preview: SplitScreenPreview.Games },
+    { type: "view", label: "设置", viewId: "settings", preview: SplitScreenPreview.Settings },
+    ...(nowPlayingItem ? [{ type: "view" as const, label: "正在播放", viewId: "nowPlaying" as const, preview: SplitScreenPreview.NowPlaying }] : []),
   ], [nowPlayingItem]);
   const { activeIndex: scrollIndex } = useSelectableList({ viewId: "home", options });
 
