@@ -67,7 +67,7 @@ const BacksideContent = ({ albumId, setPlayingAlbum }: Props) => {
     () =>
       album?.songs.map((song, index) => ({
         type: "song",
-        label: song.name,
+        label: `${String(song.trackNumber || index + 1).padStart(2, "0")} ${song.name}`,
         queueOptions: {
           album,
           startPosition: index,

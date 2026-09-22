@@ -17,18 +17,26 @@ type HostSong = {
   duration?: number;
   cover_url?: string;
   coverUrl?: string;
+  coverArt?: string;
   url?: string;
   track_number?: number;
   trackNumber?: number;
 };
 
-type HostAlbum = {
-  id: string;
-  name: string;
-  artistName?: string;
-  artworkUrl?: string;
+type HostFacet = {
+  value: string;
+  count: number;
   cover_url?: string;
+};
+
+type HostSongsResponse = {
   songs?: HostSong[];
+  total?: number;
+};
+
+type HostFacetsResponse = {
+  facets?: HostFacet[];
+  total?: number;
 };
 
 type HostPlaylist = {
@@ -93,6 +101,70 @@ const hostPathPrefix = (): string => {
   return match?.[1] ?? "";
 };
 
+const officialApiGet = async <T>(
+  path: string,
+  query: Record<string, string | number | undefined> = {},
+): Promise<T> => {
+  const queryString = Object.entries(query)
+    .filter(([, value]) => value !== undefined && value !== "")
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+    .join("&");
+  const token = await window.SongloftPlugin?.getAuthToken?.();
+  const response = await fetch(
+    `${hostPathPrefix()}${path}${queryString ? `?${queryString}` : ""}`,
+    {
+      headers: {
+        Accept: "application/json",
+        ...(typeof token === "string" && token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    },
+  );
+  if (!response.ok) throw new Error(`Host API request failed: ${response.status}`);
+  return response.json() as Promise<T>;
+};
+
+const fetchAllOfficialSongs = async (
+  filters: Record<string, string | number | undefined>,
+): Promise<HostSong[]> => {
+  const limit = 500;
+  const songs: HostSong[] = [];
+  let offset = 0;
+  let total = 0;
+  do {
+    const response = await officialApiGet<HostSongsResponse>("/api/v1/songs", {
+      ...filters,
+      limit,
+      offset,
+    });
+    const page = response.songs ?? [];
+    songs.push(...page);
+    total = response.total ?? page.length;
+    offset += page.length;
+    if (page.length === 0) break;
+  } while (offset < total);
+  return songs;
+};
+
+const fetchAllOfficialFacets = async (field: "album" | "artist"): Promise<HostFacet[]> => {
+  const limit = 500;
+  const facets: HostFacet[] = [];
+  let offset = 0;
+  let total = 0;
+  do {
+    const response = await officialApiGet<HostFacetsResponse>("/api/v1/songs/facets", {
+      field,
+      limit,
+      offset,
+    });
+    const page = response.facets ?? [];
+    facets.push(...page);
+    total = response.total ?? page.length;
+    offset += page.length;
+    if (page.length === 0) break;
+  } while (offset < total);
+  return facets;
+};
+
 /** Converts Songloft artwork paths into WebView-safe image URLs. */
 export function coverImageUrl(sourceUrl?: string, width = 240): string | undefined {
   if (!sourceUrl) return undefined;
@@ -119,21 +191,38 @@ const toMediaSong = (song: HostSong): MediaApi.Song => ({
   name: song.title?.trim() || "未知歌曲",
   artistName: song.artist?.trim() || "未知歌手",
   albumName: song.album?.trim() || "未知专辑",
-  artwork: song.cover_url || song.coverUrl ? { url: coverImageUrl(song.cover_url ?? song.coverUrl) ?? "" } : undefined,
+  artwork: song.cover_url || song.coverUrl || song.coverArt
+    ? { url: coverImageUrl(song.cover_url ?? song.coverUrl ?? song.coverArt) ?? "" }
+    : undefined,
   duration: song.duration ?? 0,
   trackNumber: song.track_number ?? song.trackNumber ?? 0,
   url: song.url ?? String(song.id),
 });
 
-const toMediaAlbum = (album: HostAlbum): MediaApi.Album => ({
-  id: String(album.id),
-  name: album.name,
-  artistName: album.artistName,
-  artwork: album.artworkUrl || album.cover_url
-    ? { url: coverImageUrl(album.artworkUrl ?? album.cover_url) ?? "" }
-    : undefined,
-  songs: (album.songs ?? []).map(toMediaSong),
-  url: String(album.id),
+const toMediaAlbum = (
+  id: string,
+  name: string,
+  artworkUrl?: string,
+  artistName?: string,
+  songs: MediaApi.Song[] = [],
+): MediaApi.Album => ({
+  id,
+  name,
+  artistName,
+  artwork: artworkUrl ? { url: coverImageUrl(artworkUrl) ?? "" } : undefined,
+  songs,
+  url: id,
+});
+
+const toMediaAlbumFromFacet = (facet: HostFacet): MediaApi.Album =>
+  toMediaAlbum(facet.value, facet.value || "未知专辑", facet.cover_url);
+
+const toMediaArtistFromFacet = (facet: HostFacet): MediaApi.Artist => ({
+  id: facet.value,
+  name: facet.value || "未知歌手",
+  url: facet.value,
+  artwork: facet.cover_url ? { url: coverImageUrl(facet.cover_url) ?? "" } : undefined,
+  albums: [],
 });
 
 const toMediaPlaylist = (playlist: HostPlaylist, songs: MediaApi.Song[]): MediaApi.Playlist => ({
@@ -149,39 +238,50 @@ const toMediaPlaylist = (playlist: HostPlaylist, songs: MediaApi.Song[]): MediaA
 });
 
 export async function fetchMediaAlbums(): Promise<MediaApi.Album[]> {
-  const response = await get<{ albums: HostAlbum[] }>("/api/albums");
-  return response.albums.map(toMediaAlbum);
+  return (await fetchAllOfficialFacets("album")).map(toMediaAlbumFromFacet);
 }
 
 export async function fetchMediaAlbum(id: string): Promise<MediaApi.Album | undefined> {
   try {
-    return toMediaAlbum(await get<HostAlbum>(`/api/album?id=${encodeURIComponent(id)}`));
+    const hostSongs = await fetchAllOfficialSongs({ album: id });
+    if (hostSongs.length === 0) return undefined;
+    const songs = hostSongs.map(toMediaSong);
+    const artists = [...new Set(songs.map((song) => song.artistName).filter(Boolean))];
+    const coverSong = hostSongs.find((song) => song.cover_url || song.coverUrl || song.coverArt);
+    const coverUrl = coverSong?.cover_url ?? coverSong?.coverUrl ?? coverSong?.coverArt;
+    return toMediaAlbum(
+      id,
+      id || "未知专辑",
+      coverUrl,
+      artists.length === 1 ? artists[0] : artists.length > 1 ? "群星" : "未知歌手",
+      songs.sort((left, right) => left.trackNumber - right.trackNumber || left.name.localeCompare(right.name)),
+    );
   } catch {
     return undefined;
   }
 }
 
 export async function fetchMediaArtists(): Promise<MediaApi.Artist[]> {
-  const albums = await fetchMediaAlbums();
-  const artists = new Map<string, MediaApi.Artist>();
-  for (const album of albums) {
-    const name = album.artistName || "未知歌手";
-    const current = artists.get(name) ?? {
-      id: name,
-      name,
-      url: name,
-      artwork: album.artwork,
-      albums: [],
-    };
-    current.albums?.push(album);
-    artists.set(name, current);
-  }
-  return [...artists.values()].sort((left, right) => left.name.localeCompare(right.name));
+  return (await fetchAllOfficialFacets("artist"))
+    .map(toMediaArtistFromFacet)
+    .sort((left, right) => left.name.localeCompare(right.name));
 }
 
 export async function fetchMediaArtistAlbums(id: string): Promise<MediaApi.Album[]> {
-  const artist = (await fetchMediaArtists()).find((candidate) => candidate.id === id);
-  return artist?.albums ?? [];
+  const albums = new Map<string, HostSong[]>();
+  for (const song of await fetchAllOfficialSongs({ artist: id })) {
+    const name = song.album?.trim() || "未知专辑";
+    const current = albums.get(name.toLocaleLowerCase()) ?? [];
+    current.push(song);
+    albums.set(name.toLocaleLowerCase(), current);
+  }
+  return [...albums.values()]
+    .map((albumSongs) => {
+      const coverSong = albumSongs.find((song) => song.cover_url || song.coverUrl || song.coverArt);
+      const name = albumSongs[0].album?.trim() || "未知专辑";
+      return toMediaAlbum(name, name, coverSong?.cover_url ?? coverSong?.coverUrl ?? coverSong?.coverArt, id);
+    })
+    .sort((left, right) => left.name.localeCompare(right.name));
 }
 
 export async function fetchMediaPlaylists(): Promise<MediaApi.Playlist[]> {
@@ -208,14 +308,14 @@ export async function fetchMediaPlaylist(id: string): Promise<MediaApi.Playlist 
 export async function fetchMediaSearchResults(query: string): Promise<MediaApi.SearchResults> {
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const [songsResponse, albums, artists, playlists] = await Promise.all([
-    get<{ songs: HostSong[] }>(`/api/songs?limit=200&q=${encodeURIComponent(query)}`),
+    officialApiGet<HostSongsResponse>("/api/v1/songs", { keyword: query, limit: 200 }),
     fetchMediaAlbums(),
     fetchMediaArtists(),
     fetchMediaPlaylists(),
   ]);
   const includesQuery = (value?: string) => value?.toLocaleLowerCase().includes(normalizedQuery) ?? false;
   return {
-    songs: songsResponse.songs.map(toMediaSong),
+    songs: (songsResponse.songs ?? []).map(toMediaSong),
     albums: albums.filter((album) => includesQuery(album.name) || includesQuery(album.artistName)),
     artists: artists.filter((artist) => includesQuery(artist.name)),
     playlists: playlists.filter((playlist) => includesQuery(playlist.name) || includesQuery(playlist.description)),
