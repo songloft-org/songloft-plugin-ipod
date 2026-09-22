@@ -1,6 +1,6 @@
 {
   "name": "songloft-plugin-ipod",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "iPod Classic UI plugin for Songloft",
   "private": true,
   "scripts": {
